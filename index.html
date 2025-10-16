@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Lesen B2-الليمون - Teil 1</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 1000px; margin: 30px auto; line-height: 1.6; background: #f4f4f4; color: #333; }
+h1 { text-align: center; color: #2c3e50; }
+.quiz-container { background: #FFE5B4; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+.question-text { margin-top: 10px; font-weight: bold; }
+button { display: block; margin: 5px 0; padding: 8px 12px; font-size: 14px; cursor: pointer; border-radius: 5px; border: none; background: #3498db; color: #fff; transition: 0.3s; text-align: right; white-space: pre-line; }
+button:hover:not(.disabled) { background: #2980b9; }
+button.disabled { background: #bdc3c7; cursor: default; }
+.correct { background-color: #2ecc71 !important; color: #fff !important; }
+.wrong { background-color: #e74c3c !important; color: #fff !important; }
+#show-result { margin-top: 20px; background: #2ecc71; color: #fff; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+#result-container { display: none; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>Lesen B2 - الليمون - Teil 1</h1>
+
+<div id="quiz-area"></div>
+<button id="show-result">إظهار النتيجة والتصحيح</button>
+
+<div id="result-container">
+    <h2>نتيجتك</h2>
+    <p id="score"></p>
+</div>
+
+<script>
+const quiz = [
+    {
+        text: `Möchten Sie Kraft, Jugend und Gesundheit aus der Flasche? Dann suchen Sie bei Ihrem nächsten
+Einkauf im Supermarkt nach Sauerstoff-Mineralwasser.
+Für den etwa doppelten Preis eines normalen Mineralwassers erhalten Sie dann ein Getränk, von dem die
+Hersteller versprechen, dass es Ihnen – natürlich nur, wenn Sie es regelmäßig trinken – magische Kräfte
+verleiht.
+In einer Umfrage wurden Schülerinnen und Schüler in Bayern nach ihren Erfahrungen mit dem
+Sauerstoffkraftdrink befragt. Die meisten fanden, dass es nicht anders schmeckt als andere Mineralwässer
+auch.
+Das Deutsche Institut für Ernährungsforschung in Potsdam hält es für Unsinn, Wasser mit Sauerstoff
+anzureichern. Der menschliche Körper nimmt Sauerstoff hauptsächlich über die Atemluft auf, höchstens
+0,3 % können auch über den Magen-Darm-Trakt aufgenommen werden.
+Möchten Sie immer noch Kraft, Jugend und Gesundheit? Dann gehen Sie doch einfach mehr an die
+frische Luft. Und die ist kostenlos.`,
+        options: [
+            "a) Limonade aus dem Wasserhahn.",
+            "b) Limonade ist moderner als Wasser",
+            "c) Sommer bedeutet in Zukunft nicht unbedingt Sonne.",
+            "d) Mehr Sauerstoff im Wasser macht müde Menschen fit.",
+            "e) Viel Wasser trinken - Gesundheit tanken.",
+            "f) Frische Luft macht stark.",
+            "g) Die Sonne macht Landwirten Probleme.",
+            "h) Sprudel hausgemacht - Zeit des Flaschen-Tragens ist vorbei.",
+            "i) Alarm: Nitrat im Regenwasser bedroht die Gesundheit.",
+            "j) Vom Regen zum Mineralwasse."
+        ],
+        answer: 5
+    },
+    {
+        text: `Wenn es regnet, dann fließt das Regenwasser in den Erdboden, der es wie ein Schwamm aufsaugt. Langsam
+sickert das Wasser dann in immer tiefere Erdschichten, in denen es gefiltert und gereinigt wird. Aus dem
+Regenwasser ist Trinkwasser geworden.
+Schließlich sammelt es sich in einer Schicht aus Sandstein, wo es sich mit älterem Wasser vermischt.
+Mehrere tausend Jahre lang kann das Trinkwasser so in den Tiefen der Erde ruhen. Durch Brunnen, die bis
+in die tiefen Sandsteinschichten reichen, kann dann Mineralwasser gewonnen werden.
+10,6 Milliarden Liter Mineralwasser sind im letzten Jahr in Deutschland verkauft und getrunken worden.
+Gesteinsschichten wie Ton oder Kalk schützen es seit Jahrtausenden vor Verunreinigungen.
+Jedoch gelangt in den letzten Jahrzehnten Nitrat durch übermäßige Düngung in der Landwirtschaft
+vermehrt in das Trinkwasser und stellt langfristig eine Gesundheitsbedrohung für die Menschen dar.`,
+        options: [
+             "a) Limonade aus dem Wasserhahn.",
+            "b) Limonade ist moderner als Wasser",
+            "c) Sommer bedeutet in Zukunft nicht unbedingt Sonne.",
+            "d) Mehr Sauerstoff im Wasser macht müde Menschen fit.",
+            "e) Viel Wasser trinken - Gesundheit tanken.",
+            "f) Frische Luft macht stark.",
+            "g) Die Sonne macht Landwirten Probleme.",
+            "h) Sprudel hausgemacht - Zeit des Flaschen-Tragens ist vorbei.",
+            "i) Alarm: Nitrat im Regenwasser bedroht die Gesundheit.",
+            "j) Vom Regen zum Mineralwasse."
+        ],
+        answer: 8
+    },
+    {
+        text: `Nach den Unwettern der letzten Sommer sprechen Meteorologen in ganz Europa davon, dass sich das
+Klima weltweit dramatisch verändert. Stabile Sommer mit Sonnenschein pur von Juni bis August sollen
+selbst am Mittelmeer in Zukunft passé sein.
+Die durch Treibhausgase aufgeheizte Atmosphäre hat sich erwärmt, mehr Wasser verdunstet durch die
+höheren Temperaturen aus den Ozeanen und prasselt in extrem starken Unwettern mit Donner, Blitz und
+Hagel auf die Erde. Dort kann die Erde nicht mehr solche Mengen Wassers aufnehmen, wie in kürzester
+Zeit fallen. Die Folge davon sind Überschwemmungen.
+Kurze Sonnenscheinperioden werden sich mit Unwetterfronten abwechseln und vielen Menschen den
+Badespaß an den Stränden – nicht nur des Mittelmeeres – gründlich verderben.
+Doch auch den Landwirten bereiten die stärkeren Unwetter Sorgen. Denn die starken Niederschläge mit
+Hagel zerstören nicht selten einen großen Teil der Ernte und bescheren so manchen landwirtschaftlichen
+Betrieben große finanzielle Probleme.`,
+        options: [
+            "a) Limonade aus dem Wasserhahn.",
+            "b) Limonade ist moderner als Wasser",
+            "c) Sommer bedeutet in Zukunft nicht unbedingt Sonne.",
+            "d) Mehr Sauerstoff im Wasser macht müde Menschen fit.",
+            "e) Viel Wasser trinken - Gesundheit tanken.",
+            "f) Frische Luft macht stark.",
+            "g) Die Sonne macht Landwirten Probleme.",
+            "h) Sprudel hausgemacht - Zeit des Flaschen-Tragens ist vorbei.",
+            "i) Alarm: Nitrat im Regenwasser bedroht die Gesundheit.",
+            "j) Vom Regen zum Mineralwasse."
+        ],
+        answer: 6
+    },
+    {
+        text: `Wozu noch Kästen mit Mineralwasserflaschen nach Hause schleppen, wenn es sich doch bequem zu
+Hause zubereiten lässt?
+Tatsächlich ist das Leitungswasser, das aus den Wasserhähnen in deutschen Wohnungen fließt, von
+guter bis sehr guter Qualität. Einzig das Prickeln auf der Zunge, das durch das Hinzufügen von
+Kohlensäure in viele Mineralwässer entsteht, fehlt bei dem Leitungswasser.
+Doch auch hier gibt es bereits eine preiswerte Möglichkeit, dies selbst zu tun: mit einer Sodamaschine.
+Damit lassen sich Sprudel und Limonaden selbst herstellen – ganz nach dem individuellen Geschmack
+des Nutzers: mal mit mehr, mal mit weniger Prickeln, mal süßer, mal fruchtiger.
+Und das Wasser kommt wie von selbst ins Haus – das Tragen und Stapeln von Getränkekästen ist für
+den cleveren Selbsthersteller Vergangenheit.`,
+        options: [
+            "a) Limonade aus dem Wasserhahn.",
+            "b) Limonade ist moderner als Wasser",
+            "c) Sommer bedeutet in Zukunft nicht unbedingt Sonne.",
+            "d) Mehr Sauerstoff im Wasser macht müde Menschen fit.",
+            "e) Viel Wasser trinken - Gesundheit tanken.",
+            "f) Frische Luft macht stark.",
+            "g) Die Sonne macht Landwirten Probleme.",
+            "h) Sprudel hausgemacht - Zeit des Flaschen-Tragens ist vorbei.",
+            "i) Alarm: Nitrat im Regenwasser bedroht die Gesundheit.",
+            "j) Vom Regen zum Mineralwasse."
+        ],
+        answer: 7
+    },
+    {
+        text: `„Wasser ist zum Waschen da“, lautete ein deutscher Schlager Mitte der 1950er, in dem es weiter hieß:
+„Auch zum Zähneputzen kann man es benutzen.“
+Wasser zu trinken schien damals manchen Leuten nicht in die neue Wohlstandswelt zu passen. Süße
+Limonaden galten als besser als einfach nur Wasser.
+Dabei raten heute die meisten Ärzte zum Wassertrinken: „Trinken Sie täglich mindestens 2,5 Liter
+davon“, steht auch in nahezu allen medizinischen Ratgebern von heute.
+Mineralwasser hat, wie man heute wieder weiß, durch seine mineralischen Inhaltsstoffe – Natrium,
+Kalium, Magnesium, Calcium und Spurenelemente – für den menschlichen Körper viele Vorteile: Es
+gleicht den Mineral- und Flüssigkeitsverlust beim Schwitzen aus, es fördert die Verdauung – und das
+alles ohne den Körper belastenden Zucker und ohne Kalorien.
+Ob aus der Heimat oder – wie in den jetzt modischen Wasserbars – von der Insel Hawaii oder vom
+Südpol: Wasser ist wieder zum Trinken da.`,
+        options: [
+             "a) Limonade aus dem Wasserhahn.",
+            "b) Limonade ist moderner als Wasser",
+            "c) Sommer bedeutet in Zukunft nicht unbedingt Sonne.",
+            "d) Mehr Sauerstoff im Wasser macht müde Menschen fit.",
+            "e) Viel Wasser trinken - Gesundheit tanken.",
+            "f) Frische Luft macht stark.",
+            "g) Die Sonne macht Landwirten Probleme.",
+            "h) Sprudel hausgemacht - Zeit des Flaschen-Tragens ist vorbei.",
+            "i) Alarm: Nitrat im Regenwasser bedroht die Gesundheit.",
+            "j) Vom Regen zum Mineralwasse."
+        ],
+        answer: 1
+    }
+];
+
+const quizArea = document.getElementById("quiz-area");
+let userAnswers = Array(quiz.length).fill(null);
+
+quiz.forEach((teil, index) => {
+    const container = document.createElement("div");
+    container.className = "quiz-container";
+
+    const textEl = document.createElement("p");
+    textEl.innerText = teil.text;
+    container.appendChild(textEl);
+
+    teil.options.forEach((opt, oIndex) => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = (e) => {
+            const allBtns = e.target.parentElement.querySelectorAll("button");
+            allBtns.forEach(b => {
+                b.classList.remove("disabled");
+                b.disabled = false;
+            });
+
+            userAnswers[index] = oIndex;
+            e.target.classList.add("disabled");
+            e.target.disabled = true;
+        };
+        container.appendChild(btn);
+    });
+
+    quizArea.appendChild(container);
+});
+
+document.getElementById("show-result").onclick = () => {
+    let score = 0;
+    quiz.forEach((teil, index) => {
+        const correct = teil.answer;
+        const selected = userAnswers[index];
+        const container = quizArea.children[index];
+        const buttons = container.querySelectorAll("button");
+
+        buttons.forEach((btn, oIndex) => {
+            btn.disabled = true;
+            if(oIndex === correct) btn.classList.add("correct");
+            if(selected === oIndex && selected !== correct) btn.classList.add("wrong");
+        });
+
+        if(selected === correct) score++;
+    });
+
+    document.getElementById("score").innerText = `النقاط: ${score*5} / 25`;
+    document.getElementById("result-container").style.display = "block";
+};
+</script>
+</body>
+</html>
+<h1>Lesen B2 - الليمون - Teil 2</h1>
+
+<div class="quiz-container">
+    <p>
+        Müdigkeit und juckende Augen – Arbeit in Großraumbüros:<br>
+Dieser Artikel entsteht unter katastrophalen Bedingungen. Links vom Autor, keinen halben Meter entfernt, diskutieren die
+Onlineredakteure gerade über portugiesische Bankgeschäfte. Von rechts eilt nun der befreundete Kollege heran: „Sag mal,
+hast du eine Ahnung, ob das Bayern-Spiel heute Abend live im Fernsehen übertragen wird?“ Und da – die Chefin, ganz
+aufgeregt winkt sie herüber: „Wann wird denn die Geschichte endlich fertig? Die hätte vor einer halben Stunde ins
+Korrektorat gemusst. Beeil dich bitte!“ Was wir Arbeitenden im Großraumbüro immer schon ahnten, haben Schweizer
+Forscher nun erstmals auf breiter wissenschaftlicher Basis nachgewiesen: Großraum ist schlecht. Zumindest für diejenigen,
+die darin arbeiten müssen. Mag sein, dass die Chefs in ihren Einzelbüros da anderer Meinung sind. Gut 1.200 Beschäftigte aus
+unterschiedlichsten Berufen hat die Hochschule Luzern befragt. Die Ergebnisse der Erhebung sind eindeutig. Beispiel Lärm:
+In Büros mit mehr als 16 Mitarbeitern fühlen sich 80 % der Befragten regelmäßig durch Gespräche oder Telefonate gestört –
+in Zweierbüros sind es nicht mal 30 %. Auch was die alltäglichen Büroprobleme betrifft, ist der Großraum von Nachteil. Egal,
+wonach die Forscher fragten – Müdigkeit, Schweregefühl im Kopf, juckende Augen oder verstopfte Nase – immer litten
+Mitarbeiter im Großraumbüro am stärksten.
+    </p>
+
+    <!-- سؤال 1 -->
+    <p class="question-text">1) Eine Studie aus der Schweiz ...</p>
+    <button data-correct="true">a) belegt, dass die Mitarbeiter sich über Lärm im Großraumbüro beklagen.</button>
+    <button data-correct="false">b) brachte keine eindeutigen Ergebnisse zur Zufriedenheit mit unterschiedlichen Büroformen.</button>
+    <button data-correct="false">c) zeigt, dass Mitarbeiter in Großraumbüros seltener krank sind als andere.</button>
+
+    <!-- سؤال 2 -->
+    <p class="question-text">2) Großraumbüros ..</p>
+    <button data-correct="false">a) reduzieren den Krankenstand.</button>
+    <button data-correct="true">b) sind kostengünstiger zu beheizen.</button>
+    <button data-correct="false">c) werden immer seltener.</button>
+
+    <!-- سؤال 3 -->
+    <p class="question-text">3) Die deutschen Angestellten ....</p>
+    <button data-correct="true">a) bevorzugen Einzelbüros.</button>
+    <button data-correct="false">b) genießen eine individuell ausgewählte Büromöblierung.</button>
+    <button data-correct="false">c) leiden unter zu engen Einzelbüros.</button>
+
+    <!-- سؤال 4 -->
+    <p class="question-text">4) Die Arbeitsplatzfläche ...</p>
+    <button data-correct="false">a) ist in Londoner Großraumbüros für den Chef größer als für andere Mitarbeiter.</button>
+    <button data-correct="false">b) schließt die gemeinsam genutzten Flächen aus.</button>
+    <button data-correct="true">c) wird in London oft unter mehreren Mitarbeitern aufgeteilt</button>
+
+    <!-- سؤال 5 -->
+    <p class="question-text">5) Großraumbüros ...</p>
+    <button data-correct="true">a) gibt es vor allem in Banken und Telekommunikationsunternehmen.</button>
+    <button data-correct="false">b) werden bald in 40% der deutschen Firmen eingeführt.</button>
+    <button data-correct="false">c) werden meist in Einzelzellen unterteilt.</button>
+
+    <p class="feedback"></p>
+</div>
+
+<!-- زر النتيجة النهائية -->
+<div style="background:#fff;padding:20px;margin-top:20px;border-radius:8px;">
+    <button id="show-result-2">إظهار النتيجة النهائية للتمرين 2</button>
+    <p id="score-2" style="font-weight:bold;"></p>
+</div>
+
+<script>
+document.querySelectorAll(".quiz-container").forEach(container => {
+    container.querySelectorAll("button[data-correct]").forEach(btn => {
+        btn.onclick = () => {
+            const siblings = btn.parentElement.querySelectorAll("button[data-correct]");
+            siblings.forEach(s => s.classList.remove("selected"));
+            btn.classList.add("selected");
+        };
+    });
+});
+
+document.getElementById("show-result-2").onclick = function() {
+    const correctButtons = document.querySelectorAll('.quiz-container button[data-correct="true"]');
+    const allButtons = document.querySelectorAll('.quiz-container button[data-correct]');
+    let score = 0;
+
+    correctButtons.forEach(btn => {
+        if (btn.classList.contains("selected")) {
+            score++;
+        }
+    });
+
+    allButtons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.dataset.correct === "true") {
+            btn.style.backgroundColor = "lightgreen";
+        } else if (btn.classList.contains("selected") && btn.dataset.correct === "false") {
+            btn.style.backgroundColor = "#ff7f7f";
+        }
+    });
+
+    const total = correctButtons.length;
+    document.getElementById("score-2").textContent = `النقاط: ${score * 5} / ${total * 5}`;
+};
+</script>
+
+<div id="quiz-area-3"></div>
+</div>
+<body>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Lesen B2 - الليمون - Teil 3</title>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; }
+h1 { text-align: center; margin-bottom: 20px; }
+.question { background-color: #ffe0b2; padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.question p { margin-bottom: 10px; }
+.question label { display: block; margin-bottom: 5px; cursor: pointer; background-color: #fff; padding: 5px; border-radius: 3px; }
+.question label.selected { background-color: #ddd; }
+.question label.correct { background-color: #c8e6c9; }
+.question label.incorrect { background-color: #ffcdd2; }
+button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background-color: #2196F3; color: #fff; }
+button:hover { background-color: #1976D2; }
+#result-container { margin-top: 20px; padding: 15px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none; }
+</style>
+</head>
+<body>
+
+<h1>Lesen B2 - الليمون - Teil 3</h1>
+
+<div id="quiz-area">
+
+<!-- Question 1 -->
+<div class="question" data-correct="4">
+  <h3>Text 1: Urlaub auf dem Sofa</h3>
+  <p>Im Urlaub zu Hause bleiben und sich auf dem Sofa ausruhen? Das fanden wir zu langweilig! Sofa ja, aber
+nicht das eigene - so lässt sich unsere Urlaubsidee zusammenfassen. Wenn Sie durch Deutschland,
+Frankreich, England oder andere europäische Länder reisen und dabei nicht nur Hotelzimmer, sondern
+ganz normale Leute kennenlernen wollen, dann buchen Sie jetzt bei uns. In unserer Datenbank bieten
+Menschen aus ganz Europa einen Schlafplatz für eine Person in ihrer Wohnung an - manchmal ein Zimmer,
+manchmal ein Sofa. Gegen eine geringe Gebühr kann man dort übernachten und das Frühstück ist auch mit
+dabei. So lernen Sie Länder, Städte, Menschen mal von einer ganz anderen Seite kennen! Infos und
+Buchung unter www.schlafplätzeineuropa.eu</p>
+
+  <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 2 -->
+<div class="question" data-correct="9">
+<h3>Text 2: Alte Möbel aufarbeiten</h3>
+<p>Viele Menschen hängen an ihren alten Möbeln und möchten sie nicht gegen andere tauschen, obwohl sie die
+besten Tage schon hinter sich haben. Wir bieten Ihnen für wenig Geld die Restauration Ihrer Möbel an. Mit
+einer anderen Farbe wirken viele Stücke wieder wie neu! Und falls ein Anstrich nicht reicht, zeigt Ihnen unsere
+Werkstatt, was noch möglich ist: z. B. neue Türen an Schränken oder neue Bezüge für Ihre Sessel und Sofas.
+Wir kommen gern zu Ihnen nach Hause und machen Ihnen ein kostenloses Angebot! www.schreiner.de</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+  </div>
+<!-- Question 3 -->
+<div class="question" data-correct="5">
+<h3>Text 3: Kunstmarkt</h3>
+<p>In unseren Ausstellungsräumen am Plantanenhof bieten wir an jedem ersten Samstag im Monat jungen
+Künstlerinnen und Künstlern die Möglichkeit, sich und einige ihrer Werke vorzustellen. Wenn Sie an einer
+Ausstellung interessiert sind, melden Sie sich bitte spätestens sechs Wochen vor dem gewünschten Termin
+bei uns an. Aber auch Besucher sind herzlich willkommen! Gegen einen geringen Eintritt erwartet Sie nicht
+nur neue Kunst, auch Kaffee und Tee werden serviert und natürlich haben Sie auch die Gelegenheit, ein
+Werk gleich zu kaufen und mitzunehmen. Weitere Informationen und Anmeldung unter: www.galeria.de</p>
+<label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+<!-- Question 4 -->
+<div class="question" data-correct="0">
+<h3>Text 4: Die eigene Wohnung</h3>
+<p> Für viele ist die eigene Wohnung ein Traum – aber es gibt auch Fragen und Probleme. Wir bieten extra für
+alle, die zum ersten Mal die eigenen vier Wände beziehen, Infoabende an, in denen sie alles Wichtige zur
+Haushaltsführung erfahren: Wie bewahrt man Lebensmittel richtig auf? Wie viele Vorräte braucht man? Wie
+putzt man richtig und welches Mittel ist am besten geeignet? Wie spart man Strom und Heizkosten?
+Erfahren Sie alles, was wichtig ist, von Omas Spar-Rezepten bis hin zu moderner Küchentechnik. Die
+Teilnahme ist kostenlos, um Anmeldung wird aber gebeten. AWO Kirchhellen. Tel. 0800 / 61619012</p>
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 5 -->
+<div class="question" data-correct="2">
+<h3>Text 5: Unser neues Wohnkonzept</h3>
+<p>Unser Angebot: 1-Zimmerwohnungen mit kompletter Ausstattung, auch Telefon und Internet, außerdem
+morgens kostenlose Tageszeitung nach Wunsch sowie ein komplettes Frühstück. Alle Wohnungen verfügen
+über großzügige Arbeitsplätze sowie Drucker, Fax etc. In über 25 Städten buchbar. Außerdem auf Wunsch
+persönlicher Service (Kurierdienst, Abholung vom Bahnhof/Flughafen etc.). Wir gestalten Ihre
+Geschäftsreise so angenehm wie möglich – für alle, denen Hotels zu unpersönlich sind. Informationen
+unter: www.wohnkonzept.de</p>
+<label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 7 -->
+<div class="question" data-correct="7">
+<h3>Text 6: Ihr gutes Recht</h3>
+<p>Wenn es um Rechtsfragen geht, kann es schnell teuer werden. Anwalts- und vielleicht auch Gerichtskosten
+werden fällig – von den Nerven, die man verliert, ganz zu schweigen. Wir bieten eine günstige und
+zuverlässige Alternative in allen Fragen rund um das Mietrecht: Ihre Miete wurde erhöht oder Ihr Vermieter
+repariert Schäden in der Wohnung nicht? Oder haben Sie eine Kündigung von Ihrem Vermieter erhalten,
+obwohl Sie immer pünktlich die Miete überwiesen haben und auch sonst alles in Ordnung war? Dann
+vereinbaren Sie einen kostenlosen Beratungstermin bei uns! Wenn wir Sie von unserem Angebot überzeugt
+haben, können Sie anschließend Mitglied in unserem Verein werden – für nur 75,00 Euro pro Jahr!
+Mieterschutzbund Brandenburg.</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 8 -->
+<!-- Text 7 -->
+<div class="question" data-correct="10">
+<h3>Text 7: Preiswert wohnen in über 70 Städten in Deutschland</h3>
+<p>Wir bieten Ihnen die preiswerte Alternative zum teuren Hotelzimmer: Erleben Sie Deutschland und wohnen
+Sie in über 70 Städten von Flensburg bis Konstanz in einer unserer neuen Pensionen. Wir bieten gemütliche
+Mehrbettzimmer, einige auch mit Bad. Unsere Häuser sind jeweils zentral gelegen und somit gut zu
+erreichen. Wir bieten Ihnen zwar keine Mahlzeiten an, aber fast überall in der Nähe unserer Pensionen
+finden Sie kleine Cafés. Ideal für alle, die günstig reisen möchten! Weitere Informationen und Buchung
+unter www.pensionen.de</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 9 -->
+<div class="question" data-correct="6">
+<h3>Text 8: Zuhause bleiben und trotzdem was erleben</h3>
+<p>Urlaub zu Hause – für viele das schönste Urlaubserlebnis! Wir haben Tipps, wie Sie Ihren Urlaub noch
+schöner machen können: Veranstaltungstipps (Konzerte, Theater …), Kurse (Kochkurse, Singen,
+Musikinstrumente …), Sport- und Ausflugstipps für Ihre Region. Ob allein, zu zweit oder mit der ganzen
+Familie – bei uns finden Sie das Passende! Registrieren Sie sich jetzt und wählen Sie aus, welche Tipps wir
+Ihnen zuschicken sollen. Natürlich kostenlos! Infos und Registrierung unter www.urlaubzuhause.info</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+<!-- Question 9 -->
+<div class="question" data-correct="0">
+<h3>Text 9: Guter Rat ist nicht teuer</h3>
+<p>Probleme mit Arbeitgeber oder Vermieter? Hatten Sie einen Unfall und niemand will die Kosten für Ihren
+Krankenhausaufenthalt zahlen? In solchen Fragen ist es gut, wenn man einen Anwalt an seiner Seite hat –
+und ihn auch bezahlen kann. Schließen Sie deshalb unsere kostengünstige Rechtsschutzversicherung ab.
+Wir zahlen den Anwalt und die Gerichtskosten – je nach Tarif komplett oder zum Teil. Informieren Sie sich
+auch über unsere günstigen Familientarife! Rufen Sie an: Thüringer Versicherungen, Tel. 08074 55339.
+Wichtig: Sie können die Leistungen erst 6 Monate nach Vertragsabschluss in Anspruch nehmen! </p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 9 -->
+<div class="question" data-correct="8">
+<h3>Text 10: Kunst und Kultur für Einsteiger</h3>
+<p>Nicht nur im Urlaub möchten viele Menschen in der Freizeit Neues ausprobieren. Wir bieten
+Schnupperkurse zu verschiedenen Freizeitaktivitäten an: Malen war schon immer Ihre Leidenschaft? Sie
+wollten schon lange probieren, welches Instrument zu Ihnen passt? Dann besuchen Sie einfach unsere
+Schnupperkurse „Kunst und Kultur für Einsteiger“! Nur 60 Minuten pro Kurs, danach können Sie
+entscheiden, ob Sie einen anderen Kurs ausprobieren möchten oder sich gleich für einen „richtigen“ Kurs
+anmelden wollen. Malerei, Musik, Literatur, Geschichte stehen auf dem Programm. Informieren Sie sich
+jetzt: Kunstschule Heckmann, Tel. 0800 444509434</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+
+<!-- Question 10 -->
+<div class="question" data-correct="1">
+<h3>Text 11: Ihr kompetenter Partner für Rechtsberatung seit über 20 Jahren</h3>
+<p>Ihre kompetente Rechtsberatung in ganz Deutschland! Unsere Anwälte vertreten Ihre Interessen zügig und
+zuverlässig im Bereich „Arbeit“. Vom Arbeitsvertrag über Probleme am Arbeitsplatz bis hin zu
+Kündigungen oder auch Problemen bei der Zahlung des Arbeitslosengeldes unterstützen wir Sie sowohl vor
+Gericht als auch außerhalb. Unsere Erfahrung ist Ihr Vorteil. Natürlich ist eine Abrechnung über Ihre
+Rechtsschutzversicherung möglich, sprechen Sie uns einfach an und vereinbaren Sie einen Beratungstermin!
+Kanzlei Hummel und Schröder, Torstraße 211, 80121 München, Tel. 089 1234567.</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- Question 12 -->
+<div class="question" data-correct="0">
+<h3>Text 12: Immer das richtige Möbel – ob Büro oder Wohnzimmer</h3>
+<p>Egal, ob Sie beruflich oft unterwegs sind oder viel Wert auf ein gemütliches Zuhause legen: Sie wissen, dass
+es bei Möbeln und weiterer Ausstattung auf die Details ankommt. Wir bieten für jeden Bedarf das Richtige
+an: Schreibtische mit integrierten Kabeln für Telefon- oder Internetverbindungen, Sofas mit praktischer
+Bettfunktion und farblich passenden Leuchten. Wir bieten auch gebrauchte Möbel günstig an – natürlich
+nur in bestem Zustand. Schauen Sie sich unsere Ausstellung an!
+Möbel Weber GmbH, Am Langen Hahn 24, 42188 Dortmund.</p>
+
+ <label><input type="radio" name="q1" value="0"> Keine Antwort</label>
+  <label><input type="radio" name="q1" value="1"> Ein Bekannter hat seine Arbeitsstelle verloren. Er mochte sich von einem Anwalt beraten lassen.</label>
+  <label><input type="radio" name="q1" value="2"> Ihr Bekannter ist beruflich oft unterwegs und sucht eine Alternative zu Hotels. Auf Fruhstuck
+und Internet mochte er aber nicht verzichten.</label>
+  <label><input type="radio" name="q1" value="3"> Sie verreisen oft und möchten daher Informationen zu einer guten Reiseversicherung.</label>
+  <label><input type="radio" name="q1" value="4"> Sie möchten durch Europa reisen und privat übernachten.</label>
+  <label><input type="radio" name="q1" value="5"> Eine Bekannte malt sehr gut und sucht eine Gelegenheit,ihre Bilder zu vermarkten.</label>
+  <label><input type="radio" name="q1" value="6"> Sie möchten im Urlaub zwar nicht verreisen, aber trotzdem etwas unternehmen.</label>
+  <label><input type="radio" name="q1" value="7"> Sie haben Streit mit Ihrem Vermieter wegen der Nebenkosten und brauchen eine Auskunft.</label>
+  <label><input type="radio" name="q1" value="8"> Sie möchten ausprobieren,ob Sie Kreativ mit Stiften, Pinseln und Farben umgehen können.</label>
+  <label><input type="radio" name="q1" value="9"> Ihre Möbel sehen nicht mehr so gut aus. Daran möchten Sie etwas ändern.</label>
+  <label><input type="radio" name="q1" value="10"> Sie möchten mit Freunden durch Deutschland reisen und dabei günstig übernachten.</label>
+</div>
+
+<!-- باقي الصفحة كاملة -->
+
+<button id="checkAnswers">Ergebnisse anzeigen</button>
+
+<script>
+document.getElementById("checkAnswers").addEventListener("click", function() {
+  const questions = document.querySelectorAll(".question");
+
+  questions.forEach(q => {
+    const correctValue = q.dataset.correct;
+    const inputs = q.querySelectorAll("input[type='radio']");
+
+    inputs.forEach(input => {
+      const label = input.parentElement;
+      label.style.backgroundColor = ""; // نحيد أي لون قديم
+
+      // ✅ إذا الجواب هو الصحيح، نوليه أخضر (سواء اختار المستخدم أو لا)
+      if (input.value === correctValue) {
+        label.style.backgroundColor = "lightgreen";
+      }
+
+      // ❌ إذا المستخدم اختار جواب خاطئ، نوليه أحمر
+      if (input.checked && input.value !== correctValue) {
+        label.style.backgroundColor = "lightcoral";
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
